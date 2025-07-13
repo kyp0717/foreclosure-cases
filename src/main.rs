@@ -16,6 +16,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     let driver = WebDriver::new("http://localhost:40319", caps).await?;
     let site = "https://civilinquiry.jud.ct.gov/PropertyAddressSearch.aspx";
+    let site_case = "https://civilinquiry.jud.ct.gov/CaseDetail/PublicCaseDetail.aspx?DocketNo=";
     driver.goto(site).await?;
 
     // Enter city name
@@ -49,6 +50,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         for case in &cases {
             println!("{:?}", case);
         }
+        save_cases_to_csv(&cases, "cases.csv");
     } else {
         println!("Table not found.");
     }
