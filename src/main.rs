@@ -7,14 +7,18 @@ use thirtyfour::prelude::*;
 struct Case {
     name: String,
     docket: String,
+    defendant: String,
+    property_address: String,
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let caps = DesiredCapabilities::chrome();
     // caps.add_arg("--headless=new")?; // enable in headless mode
+    let port = "36757";
+    let driver_path = format!("http://localhost:{}", port);
 
-    let driver = WebDriver::new("http://localhost:40319", caps).await?;
+    let driver = WebDriver::new(driver_path, caps).await?;
     let site = "https://civilinquiry.jud.ct.gov/PropertyAddressSearch.aspx";
     let site_case = "https://civilinquiry.jud.ct.gov/CaseDetail/PublicCaseDetail.aspx?DocketNo=";
     driver.goto(site).await?;
@@ -47,10 +51,35 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     if let Some(table_html) = extract_table(&html, table_id) {
         tokio::fs::write("case_table.html", &table_html).await?;
         let cases = extract_case(&table_html);
-        for case in &cases {
-            println!("{:?}", case);
+        // index the cases
+        for (i, case) in cases.iter().enumerate() {
+            
+            // remove the dashes in the docket number
+            let docket_cleaned = case.docket.replace("-", "");
+            // Construct the full case URL
+            let case_url = format!("{}{}", site_case, docket_cleaned);
+            // go to the site for each case
+            driver.goto(&case_url).await?;
+            // Wait for the page to load
+            driver.query(By::Id("ctl00_tblContent")).first().await?;
+            // Get the case details page HTML
+            let case_html = driver.source().await?;
+            // Save the case HTML for inspection, indexed by i
+            let case_file_name = format!("case_{:03}_{}.html", i + 1, docket_cleaned);
+            tokio::fs::write(case_file_name, &case_html).await?;
+            //extract the name and property address from the case HTML
+            let doc = Html::parse_document(&case_html);
+            let property_address = extract_property_address(&doc).unwrap_or_default();
+            let defendant = extract_defendant_name(&doc).unwrap_or_default();   
+            // Update the case with extracted details
+            let mut updated_case = case.clone();
+            updated_case.defendant = defendant;
+
+            if i == 0 {
+            break;
+            }
         }
-        save_cases_to_csv(&cases, "cases.csv");
+        // save_cases_to_csv(&cases, "cases.csv");
     } else {
         println!("Table not found.");
     }
@@ -106,4 +135,18 @@ fn save_cases_to_csv(cases: &[Case], path: &str) -> Result<(), Box<dyn Error>> {
 
     wtr.flush()?;
     Ok(())
+}
+
+fn extract_property_address(doc: &Html) -> Option<String> {
+    let selector = Selector::parse(r#"span#ctl00_ContentPlaceHolder1_CaseDetailBasicInfo1_lblPropertyAddress"#).ok()?;
+    doc.select(&selector)
+        .next()
+        .map(|el| el.text().collect::<String>().trim().to_string())
+}
+
+fn extract_defendant_name(doc: &Html) -> Option<String> {
+    let selector = Selector::parse(r#"span#ctl00_ContentPlaceHolder1_CaseDetailParties1_gvParties_ctl05_lblPtyPartyName"#).ok()?;
+    doc.select(&selector)
+        .next()
+        .map(|el| el.text().collect::<String>().trim().to_string())
 }

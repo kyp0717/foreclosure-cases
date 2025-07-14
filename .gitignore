@@ -1,1 +1,7 @@
 target/
+*.html
+*.csv
+*.json
+*.log
+*.txt
+*.md
