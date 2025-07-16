@@ -15,7 +15,7 @@ struct Case {
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let caps = DesiredCapabilities::chrome();
     // caps.add_arg("--headless=new")?; // enable in headless mode
-    let port = "36757";
+    let port = "33105";
     let driver_path = format!("http://localhost:{}", port);
 
     let driver = WebDriver::new(driver_path, caps).await?;
@@ -53,7 +53,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         let cases = extract_case(&table_html);
         // index the cases
         for (i, case) in cases.iter().enumerate() {
-            
             // remove the dashes in the docket number
             let docket_cleaned = case.docket.replace("-", "");
             // Construct the full case URL
@@ -70,13 +69,13 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             //extract the name and property address from the case HTML
             let doc = Html::parse_document(&case_html);
             let property_address = extract_property_address(&doc).unwrap_or_default();
-            let defendant = extract_defendant_name(&doc).unwrap_or_default();   
+            let defendant = extract_defendant_name(&doc).unwrap_or_default();
             // Update the case with extracted details
             let mut updated_case = case.clone();
             updated_case.defendant = defendant;
 
             if i == 0 {
-            break;
+                break;
             }
         }
         // save_cases_to_csv(&cases, "cases.csv");
@@ -138,14 +137,20 @@ fn save_cases_to_csv(cases: &[Case], path: &str) -> Result<(), Box<dyn Error>> {
 }
 
 fn extract_property_address(doc: &Html) -> Option<String> {
-    let selector = Selector::parse(r#"span#ctl00_ContentPlaceHolder1_CaseDetailBasicInfo1_lblPropertyAddress"#).ok()?;
+    let selector = Selector::parse(
+        r#"span#ctl00_ContentPlaceHolder1_CaseDetailBasicInfo1_lblPropertyAddress"#,
+    )
+    .ok()?;
     doc.select(&selector)
         .next()
         .map(|el| el.text().collect::<String>().trim().to_string())
 }
 
 fn extract_defendant_name(doc: &Html) -> Option<String> {
-    let selector = Selector::parse(r#"span#ctl00_ContentPlaceHolder1_CaseDetailParties1_gvParties_ctl05_lblPtyPartyName"#).ok()?;
+    let selector = Selector::parse(
+        r#"span#ctl00_ContentPlaceHolder1_CaseDetailParties1_gvParties_ctl05_lblPtyPartyName"#,
+    )
+    .ok()?;
     doc.select(&selector)
         .next()
         .map(|el| el.text().collect::<String>().trim().to_string())
