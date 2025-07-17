@@ -76,4 +76,19 @@ impl Cases {
         let table_element = doc.select(&selector).next()?;
         Some(table_element.html())
     }
+
+    pub fn to_csv(&self, filename: &str) -> std::io::Result<()> {
+        let mut wtr = csv::Writer::from_path(filename)?;
+        wtr.write_record(&["Name", "Docket", "Defendant", "Property Address"])?;
+        for case in &self.cases {
+            wtr.write_record(&[
+                &case.name,
+                &case.docket,
+                &case.defendant,
+                &case.property_address,
+            ])?;
+        }
+        wtr.flush()?;
+        Ok(())
+    }
 }

@@ -2,15 +2,20 @@ mod case;
 
 use case::Cases;
 use scraper::{Html, Selector};
+use std::env;
 use std::error::Error;
 use thirtyfour::prelude::*;
 // use std::time::Duration;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
+    // Parse command line arguments
+    let args: Vec<String> = env::args().collect();
+    let port = args.get(1).map(|s| s.as_str()).unwrap_or("37187");
+    let town = args.get(2).map(|s| s.as_str()).unwrap_or("cases.csv");
+
     let caps = DesiredCapabilities::chrome();
     // caps.add_arg("--headless=new")?; // enable in headless mode
-    let port = "37187";
     let driver_path = format!("http://localhost:{}", port);
 
     let driver = WebDriver::new(driver_path, caps).await?;
@@ -22,7 +27,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     driver
         .find(By::Id("ctl00_ContentPlaceHolder1_txtCityTown"))
         .await?
-        .send_keys("Middletown")
+        .send_keys(town)
         .await?;
 
     // Click search button
@@ -81,12 +86,16 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         }
     }
     // save_cases_to_csv(&cases, "cases.csv");
+    let town_name = format!("{}{}", town, "_cases");
+    cases.to_csv(&town_name);
 
     // Print the cases for verification
     for case in &cases.cases {
-        println!("Name: {}, Docket: {}, Defendant: {}, Property Address: {}",
-                 case.name, case.docket, case.defendant, case.property_address);
-    }   
+        println!(
+            "Name: {}, Docket: {}, Defendant: {}, Property Address: {}",
+            case.name, case.docket, case.defendant, case.property_address
+        );
+    }
     driver.quit().await?;
     Ok(())
 }
