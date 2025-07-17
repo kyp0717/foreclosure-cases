@@ -1,46 +1,79 @@
 use scraper::{Html, Selector};
-// pub struct Person {
-//     first: String,
-//     last: String,
-//     phone: String,
-//     email: String,
-// }
+// use std::error::Error;
 
+#[derive(Debug, Clone)]
 pub struct Case {
     pub name: String,
     pub docket: String,
-    // pub defendant: Vec<Person>,
+    pub defendant: String,
+    pub property_address: String,
+}
+pub struct Cases {
+    pub cases: Vec<Case>,
 }
 
-
-impl Case {
-    fn new(
-        name: String,
-        docket: String
-    ) -> Self {
-        Case {
-            name,
-            docket
-        }
+impl Cases {
+    pub fn new() -> Self {
+        Cases { cases: Vec::new() }
     }
-    pub fn from_html(html: &str) -> Vec<Case> {
-        let mut cases = Vec::new();
-        let doc = Html::parse_document(html);
-        let selector = Selector::parse("table#ctl00_ContentPlaceHolder1_gvCases > tbody > tr").unwrap();
 
-        for row in doc.select(&selector) {
-            let cells: Vec<_> = row.select(&Selector::parse("td").unwrap()).collect();
-            if cells.len() < 3 {
-                continue; // Skip rows that don't have enough data
+    pub fn extract(&mut self, html: &str) {
+        let doc = Html::parse_document(&html);
+
+        // Selector for table rows inside the result table
+        let row_selector =
+            Selector::parse(r#"table[id="ctl00_ContentPlaceHolder1_gvPropertyResults"] tr"#)
+                .unwrap();
+        let td_selector = Selector::parse("td").unwrap();
+        let a_selector = Selector::parse("a").unwrap();
+
+        for row in doc.select(&row_selector) {
+            let defendant = "".to_string();
+            let property_address = "".to_string();
+            let tds: Vec<_> = row.select(&td_selector).collect();
+
+            // Each valid row should have at least 5 columns
+            if tds.len() >= 5 {
+                let name = tds[3].text().collect::<String>().trim().to_string();
+                let docket_link = tds[4].select(&a_selector).next();
+
+                if let Some(link) = docket_link {
+                    let docket = link.text().collect::<String>().trim().to_string();
+                    self.cases.push(Case {
+                        name,
+                        docket,
+                        defendant,
+                        property_address,
+                    });
+                }
             }
-
-            let name = cells[0].text().collect::<Vec<_>>().join("").trim().to_string();
-            let docket = cells[1].text().collect::<Vec<_>>().join("").trim().to_string();
-
-            cases.push(Case::new(name, docket));
         }
-        cases
     }
 
-}
+    pub fn get_defendant(doc: &Html) -> Option<String> {
+        let selector = Selector::parse(
+            r#"span#ctl00_ContentPlaceHolder1_CaseDetailParties1_gvParties_ctl05_lblPtyPartyName"#,
+        )
+        .ok()?;
+        doc.select(&selector)
+            .next()
+            .map(|el| el.text().collect::<String>().trim().to_string())
+    }
 
+    pub fn get_property_address(doc: &Html) -> Option<String> {
+        let selector = Selector::parse(
+            r#"span#ctl00_ContentPlaceHolder1_CaseDetailBasicInfo1_lblPropertyAddress"#,
+        )
+        .ok()?;
+        doc.select(&selector)
+            .next()
+            .map(|el| el.text().collect::<String>().trim().to_string())
+    }
+
+    pub fn get_html_table(html: &str, tid: &str) -> Option<String> {
+        let doc = Html::parse_document(html);
+        let selector = Selector::parse(&format!(r#"table[id="{}"]"#, tid)).ok()?;
+        let table_element = doc.select(&selector).next()?;
+        Some(table_element.html())
+    }
+}
