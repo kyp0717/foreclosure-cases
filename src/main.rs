@@ -1,7 +1,8 @@
-mod case;
+mod scrape;
 
-use case::Cases;
 use scraper::{Html, Selector};
+use sites::cases::Cases;
+use sites::judiciary::Judiciary;
 use std::env;
 use std::error::Error;
 use thirtyfour::prelude::*;
@@ -11,15 +12,17 @@ use thirtyfour::prelude::*;
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     // Parse command line arguments
     let args: Vec<String> = env::args().collect();
-    let port = args.get(1).map(|s| s.as_str()).unwrap_or("37187");
-    let town = args.get(2).map(|s| s.as_str()).unwrap_or("cases.csv");
+    let port = args.get(1).map(|s| s.as_str()).unwrap_or("41925");
+    let town = args.get(2).map(|s| s.as_str()).unwrap_or("Middletown");
 
     let caps = DesiredCapabilities::chrome();
     // caps.add_arg("--headless=new")?; // enable in headless mode
     let driver_path = format!("http://localhost:{}", port);
 
     let driver = WebDriver::new(driver_path, caps).await?;
+
     let site = "https://civilinquiry.jud.ct.gov/PropertyAddressSearch.aspx";
+    let site = Judiciary::base_url();
     let site_case = "https://civilinquiry.jud.ct.gov/CaseDetail/PublicCaseDetail.aspx?DocketNo=";
     driver.goto(site).await?;
 
@@ -43,9 +46,6 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     // Get updated page HTML
     let html = driver.source().await?;
-
-    // Save full HTML for inspection
-    tokio::fs::write("page.html", &html).await?;
 
     let mut cases = Cases::new();
 
@@ -87,7 +87,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     }
     // save_cases_to_csv(&cases, "cases.csv");
     let town_name = format!("{}{}", town, "_cases");
-    cases.to_csv(&town_name);
+    cases.to_csv(&town_name)?;
 
     // Print the cases for verification
     for case in &cases.cases {
