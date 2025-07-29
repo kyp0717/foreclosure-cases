@@ -1,2 +1,2 @@
-pub mod judicial;
-pub mod truepeople;
+pub mod cases;
+pub mod judiciary;

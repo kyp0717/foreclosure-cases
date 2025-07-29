@@ -1,8 +1,8 @@
 mod scrape;
 
 use scraper::{Html, Selector};
-use sites::cases::Cases;
-use sites::judiciary::Judiciary;
+// use sites::cases::Cases;
+// use sites::judiciary::Judiciary;
 use std::env;
 use std::error::Error;
 use thirtyfour::prelude::*;
@@ -22,7 +22,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let driver = WebDriver::new(driver_path, caps).await?;
 
     let site = "https://civilinquiry.jud.ct.gov/PropertyAddressSearch.aspx";
-    let site = Judiciary::base_url();
+    let base_url = scrape::judiciary::Judiciary::ba
     let site_case = "https://civilinquiry.jud.ct.gov/CaseDetail/PublicCaseDetail.aspx?DocketNo=";
     driver.goto(site).await?;
 
