@@ -1,5 +1,7 @@
+use csv::Writer;
 use scraper::{Html, Selector};
-// use std::error::Error;
+use std::error::Error;
+use std::fs::File;
 
 #[derive(Debug, Clone)]
 pub struct Case {
@@ -7,6 +9,17 @@ pub struct Case {
     pub docket: String,
     pub defendant: String,
     pub property_address: String,
+}
+
+impl Case {
+    pub fn to_csv_record(&self) -> Vec<String> {
+        vec![
+            self.name.clone(),
+            self.docket.clone(),
+            self.defendant.clone(),
+            self.property_address.clone(),
+        ]
+    }
 }
 pub struct Cases {
     pub cases: Vec<Case>,
@@ -75,5 +88,21 @@ impl Cases {
         let selector = Selector::parse(&format!(r#"table[id="{}"]"#, tid)).ok()?;
         let table_element = doc.select(&selector).next()?;
         Some(table_element.html())
+    }
+
+    pub fn save_to_csv(&self, filename: &str) -> Result<(), Box<dyn Error>> {
+        let file = File::create(filename)?;
+        let mut wtr = Writer::from_writer(file);
+
+        // Write header
+        wtr.write_record(&["Name", "Docket", "Defendant", "Property Address"])?;
+
+        // Write case records
+        for case in &self.cases {
+            wtr.write_record(&case.to_csv_record())?;
+        }
+
+        wtr.flush()?;
+        Ok(())
     }
 }

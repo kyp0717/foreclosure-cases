@@ -1,7 +1,9 @@
 mod case;
+mod jdscraper;
 
 use case::Cases;
-use scraper::{Html, Selector};
+use jdscraper::Jscraper;
+use scraper::Html;
 use std::error::Error;
 use thirtyfour::prelude::*;
 // use std::time::Duration;
@@ -10,12 +12,17 @@ use thirtyfour::prelude::*;
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let caps = DesiredCapabilities::chrome();
     // caps.add_arg("--headless=new")?; // enable in headless mode
-    let port = "37187";
+    let port = "45119";
     let driver_path = format!("http://localhost:{}", port);
 
     let driver = WebDriver::new(driver_path, caps).await?;
+
+    // let judicial = Jscraper::new(driver);
     let site = "https://civilinquiry.jud.ct.gov/PropertyAddressSearch.aspx";
     let site_case = "https://civilinquiry.jud.ct.gov/CaseDetail/PublicCaseDetail.aspx?DocketNo=";
+
+    let judicial = Jscraper::new(driver);
+
     driver.goto(site).await?;
 
     // Enter city name
@@ -40,13 +47,13 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let html = driver.source().await?;
 
     // Save full HTML for inspection
-    tokio::fs::write("page.html", &html).await?;
+    tokio::fs::write("./output/page.html", &html).await?;
 
     let mut cases = Cases::new();
 
     // Extract the result table
     if let Some(table_html) = Cases::get_html_table(&html, table_id) {
-        tokio::fs::write("case_table.html", &table_html).await?;
+        tokio::fs::write("./output/foreclose-cases.html", &table_html).await?;
         cases.extract(&table_html);
     } else {
         println!("Table not found.");
@@ -64,7 +71,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         // Get the case details page HTML
         let case_html = driver.source().await?;
         // Save the case HTML for inspection, indexed by i
-        let case_file_name = format!("case_{:03}_{}.html", i + 1, docket_cleaned);
+        let case_file_name = format!("./output/case_{:03}_{}.html", i + 1, docket_cleaned);
         tokio::fs::write(case_file_name, &case_html).await?;
         //extract the name and property address from the case HTML
         let doc = Html::parse_document(&case_html);
@@ -80,13 +87,19 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
             break;
         }
     }
-    // save_cases_to_csv(&cases, "cases.csv");
+    if let Err(e) = cases.save_to_csv("./output/cases.csv") {
+        eprintln!("Error saving cases to CSV: {}", e);
+    } else {
+        println!("Cases saved to ./output/cases.csv");
+    }
 
     // Print the cases for verification
     for case in &cases.cases {
-        println!("Name: {}, Docket: {}, Defendant: {}, Property Address: {}",
-                 case.name, case.docket, case.defendant, case.property_address);
-    }   
+        println!(
+            "Name: {}, Docket: {}, Defendant: {}, Property Address: {}",
+            case.name, case.docket, case.defendant, case.property_address
+        );
+    }
     driver.quit().await?;
     Ok(())
 }
