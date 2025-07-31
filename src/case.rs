@@ -12,6 +12,15 @@ pub struct Case {
 }
 
 impl Case {
+    pub fn new(name: String, docket: String) -> Self {
+        Self {
+            name,
+            docket,
+            defendant: String::new(),
+            property_address: String::new(),
+        }
+    }
+
     pub fn to_csv_record(&self) -> Vec<String> {
         vec![
             self.name.clone(),
@@ -21,29 +30,10 @@ impl Case {
         ]
     }
 }
-pub struct Cases {
-    pub cases: Vec<Case>,
-}
 
-impl Cases {
-    pub fn new() -> Self {
-        Cases { cases: Vec::new() }
-    }
-
-    pub fn extract(&mut self, html: &str) {
-        let doc = Html::parse_document(&html);
-
-        // Selector for table rows inside the result table
-        let row_selector =
-            Selector::parse(r#"table[id="ctl00_ContentPlaceHolder1_gvPropertyResults"] tr"#)
-                .unwrap();
-        let td_selector = Selector::parse("td").unwrap();
-        let a_selector = Selector::parse("a").unwrap();
-
-        for row in doc.select(&row_selector) {
-            let defendant = "".to_string();
-            let property_address = "".to_string();
-            let tds: Vec<_> = row.select(&td_selector).collect();
+pub fn save_cases_to_csv(cases: &[Case], filename: &str) -> Result<(), Box<dyn Error>> {
+    let file = File::create(filename)?;
+    let mut wtr = Writer::from_writer(file);
 
             // Each valid row should have at least 5 columns
             if tds.len() >= 5 {
