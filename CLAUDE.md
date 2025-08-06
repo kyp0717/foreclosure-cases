@@ -2,6 +2,19 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Awareness & Context
+- Project level contexts are located in `prps/` and `logs/` folder.
+- Review sessions log files in logs to understand what you have done before starting your work.
+- **Always read `/prps/projectplan.md`** at the start of a new conversation to understand the project's architecture, goals, style, and constraints.
+- **Check `prps/tasks.md`** before starting a new task. If the task isn’t listed, add it with a brief description and today's date.
+- 
+## Task Completion
+- Do not work on tasks in the tasks.md that have already been completed.  Do not repeat these tasks.
+- Use the `tasks.md` file in the `prps/` to track the status of all the tasks that need to be done
+- Add new tasks to the tasks.md file 
+- **Mark completed tasks in `tasks.md`** immediately after finishing them.
+- Add new sub-tasks or TODOs discovered during development to `tasks.md` under a “Discovered During Work” section.
+
 ## Goal
 - Build a web scraper in rust.
 - First the web scraper will scrape a civil inquiry site from Connecticut Judiciary to get a list of court cases with docket number by town.
@@ -14,11 +27,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - A rust software engineer agent will build the code
 - A test engineer will build test suites to test each features
 
-## Project Awareness & Context
-- Project level contexts are located in `prps/` folder.   
-- **Always read `/prps/projectplan.md`** at the start of a new conversation to understand the project's architecture, goals, style, and constraints.
-- **Check `prps/tasks.md`** before starting a new task. If the task isn’t listed, add it with a brief description and today's date.
-- **Use consistent naming conventions, file structure, and architecture patterns** as described in `prps/PLANNING.md`.
 
 ## Code Structure & Modularity
 - **Never create a file longer than 500 lines of code.** If a file approaches this limit, refactor by splitting it into modules or helper files.
@@ -32,12 +40,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
     - 1 test for expected use
     - 1 edge case
     - 1 failure case
-
-## Task Completion
-- Use the `tasks.md` file in the `prps/` to track the status of all the tasks that need to be done
-- Add new tasks to the tasks.md file 
-- **Mark completed tasks in `tasks.md`** immediately after finishing them.
-- Add new sub-tasks or TODOs discovered during development to `tasks.md` under a “Discovered During Work” section.
 
 ### 📎 Modification Guideline
 - When modifying code, always  
