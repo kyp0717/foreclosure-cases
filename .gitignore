@@ -1,7 +1,6 @@
 target/
 *.html
 *.csv
-*.json
+# *.json
 *.log
-*.txt
-*.md
+# *.txt
