@@ -1,31 +1,31 @@
-# Foreclosure Scaper Context Engineering - Rules for Rust development and deployment 
+# Foreclosure Scaper Context Engineering 
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.  It contains rules for Rust development and deployment 
+
 
 ## Project Awareness & Context
-- Project level contexts are located in `prps/` and `logs/` folder.
-- Review sessions log files in logs to understand what you have done before starting your work.
-- **Always read `/prps/projectplan.md`** at the start of a new conversation to understand the project's architecture, goals, style, and constraints.
-- **Check `prps/tasks.md`** before starting a new task. If the task isn’t listed, add it with a brief description and today's date.
-- 
-## Task Completion
-- Do not work on tasks in the tasks.md that have already been completed.  Do not repeat these tasks.
+- Project contexts are located in `prps/` and `logs/` folder.
+- At the start of a new conversation, read`/prps/projectplan.md`to review project's architecture, style, and constraints.
+- At the start of a new conversation, review sessions log files in logs to understand project status and issues.
+
+## Tasks 
 - Use the `tasks.md` file in the `prps/` to track the status of all the tasks that need to be done
 - Add new tasks to the tasks.md file 
+- Do not work on tasks in the tasks.md that have already been completed.  Do not repeat these tasks.
 - **Mark completed tasks in `tasks.md`** immediately after finishing them.
 - Add new sub-tasks or TODOs discovered during development to `tasks.md` under a “Discovered During Work” section.
 
-## Goal
-- Build a web scraper in rust.
-- First the web scraper will scrape a civil inquiry site from Connecticut Judiciary to get a list of court cases with docket number by town.
-- Use the docket number to scrape the for the defendant name and address 
-- Once the name and address and discovered, the name and address will be use to search for phone number in a people search site
-- Finally, return the name and phone numbers.
+## Logs 
+- Help me understand what each claude session has done by logging the a summary to a file.
+- Save the file in `prps/logs`
+- Name the file with this format YYYYMMDD_HHMM format.
+- Add date and time as part of the content.
+- Summarize each session with heading and bullet points.
 
 ## sub agents support
-- A software architect agent will build the define features, create tasks and track project progress
-- A rust software engineer agent will build the code
-- A test engineer will build test suites to test each features
+- Use software architect agent will build the define features, create tasks and track project progress
+- Use rust software engineer agent to build the code
+- Use test engineer to build test suites to test each features
 
 
 ## Code Structure & Modularity
@@ -42,7 +42,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
     - 1 failure case
 
 ### 📎 Modification Guideline
-- When modifying code, always  
+- When modifying code, always ... tbd 
 
 ### 📎 Style & Conventions
 - **To be determine
