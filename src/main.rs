@@ -1,8 +1,8 @@
 mod case;
-mod scraper;
+mod case_scraper;
 
 use case::save_cases_to_csv;
-use scraper::Scraper;
+use case_scraper::CaseScraper;
 use std::error::Error;
 use thirtyfour::prelude::*;
 
@@ -16,7 +16,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let driver = WebDriver::new(driver_path, caps).await?;
 
     // Use the new fluent API
-    let cases = Scraper::new(driver)
+    let cases = CaseScraper::new(driver)
         .search_by_town("Middletown")
         .extract_cases()
         .await?;

@@ -16,16 +16,16 @@
 
 ## Phase 1 Requirement
 - Implement web scrape for case docket number from Connecticut Judicial Site 
-   1. Implement case struct with the case.rs file
-   2. Create a file call court_case_scraper.rs (rename scraper.rs to this new name)
-     * implement CourtCaseScraper struct (rename it from Scraper Struct since it already existed) 
+   1. Implement case struct with the `case.rs` file
+   2. Create a file call `court_case_scraper.rs` (rename `scraper.rs` to this new name)
+     * implement CaseScraper struct 
 
 ## Phase 2 Requirement
 - Search for phone number from this site:
   - `https://www.truepeoplesearch.com/`
 - Implement web scrape to extract phone number base on defendant's name and address
-  - Create another file call `phone_lookup.rs` 
-  - Implement the phonelookup_builder struct similar to the CourtCaseScraper struct.
+  - Create another file call `phone_lookup_scraper.rs` 
+  - Implement the PhoneLookupScraper struct similar to the CourtCaseScraper struct.
 
 
 
