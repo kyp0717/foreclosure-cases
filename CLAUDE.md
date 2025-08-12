@@ -67,7 +67,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Never delete or overwrite existing code** unless explicitly instructed to or if part of a task from `task.md`.
 
 
-## 📎 Coding Style & Conventions
+### 📎 Coding Style & Conventions
 - **To be determine
 
 ### Structure & Modularity
