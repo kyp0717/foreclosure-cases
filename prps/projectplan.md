@@ -20,13 +20,13 @@
    2. Create a file call `court_case_scraper.rs` (rename `scraper.rs` to this new name)
      * implement CaseScraper struct 
 
-## Phase 2 Requirement
-- Search for phone number from this site:
+## Phase 2 
+1.  Search for phone number from this site:
   - `https://www.truepeoplesearch.com/`
-- Implement web scrape to extract phone number base on defendant's name and address
-  - Create another file call `phone_lookup_scraper.rs` 
-  - Implement the PhoneLookupScraper struct similar to the CourtCaseScraper struct.
-
+2.  Implement web scrape to extract phone number base on defendant's name and address
+  - Create another file call `phone_lookup.rs` 
+  - Implement the PhoneLookup struct similar to the CaseScraper struct.
+3.  Multiple phone numbers may be associated with each person.  App must be able to store up to 4 phone numbers connected to an individual.
 
 
 ## Phase 3 Test

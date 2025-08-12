@@ -15,11 +15,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Add new sub-tasks or TODOs discovered during development to `tasks.md` under a “Discovered During Work” section.
 
 ## Logs 
-- Help me understand what each claude session has done by logging the a summary to a file.
-- Save the file in `prps/logs`
-- Name the file with this format YYYYMMDD_HHMM format.
-- Add date and time as part of the content.
-- Summarize each session with heading and bullet points.
+- Help me understand what each claude session has done by logging a summary to a file.
+- Save the log file in `logs/`
+- Name the file with this format YYYYMMDD_HHMM_log.md format.
+- Add date and time as part of the content inside the log.
+- Summarize each session with heading and bullet points.  Be concise as possible.
 
 ## sub agents support
 - Use software architect agent will build the define features, create tasks and track project progress
@@ -47,6 +47,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Integration with the actual system is verified.
 - Documentation has been updated
 - **NO FEATURE CREEP**: Resist the urge to add "nice-to-have" functionalities until the current, core feature is 100% completed and verified.
+- When you are adding a new feature such as a new method or function, stop to ask whether me permission to build feature.
+- Please fully explain reason for the function as a comment
 
 ###  Principle 4: Break things internally
 * Proactively find you flaw before they become a problem for the developer and user
@@ -85,6 +87,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Testing & Reliability
 - **After updating any logic**, check whether existing unit tests need to be updated. If so, do it.
+- Do not write test results or update README.md after testing.
 - **Tests should live in a `/tests` folder** mirroring the main app structure.
   - Include at least:
     - 1 test for expected use

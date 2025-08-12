@@ -41,11 +41,11 @@
 ## Phase 2: Phone Number Search
 
 ### People Search Integration
-- ⏳ Research and select people search API/service
-- ⏳ Implement phone number lookup by name/address
-- ⏳ Handle multiple match scenarios
-- ⏳ Add rate limiting for API calls
-- ⏳ Store phone numbers with confidence scores
+- ✅ Research and select people search API/service (2025-08-09) - Using TruePeopleSearch.com
+- ✅ Implement phone number lookup by name/address (2025-08-09)
+- ✅ Handle multiple match scenarios (2025-08-09)
+- ✅ Add rate limiting for API calls (2025-08-09)
+- ✅ Store phone numbers with confidence scores (2025-08-09)
 
 ## Phase 3: Testing & Deployment
 
@@ -66,7 +66,7 @@
 
 ### Immediate Issues
 - Hardcoded city name "Middletown" in main.rs:25
-- Hardcoded WebDriver port "37187" in main.rs:13
+- Hardcoded WebDriver port "46107" in main.rs:15
 - Arbitrary limit of 5 cases in main.rs:79
 - CSV export code is commented out in main.rs:83
 
@@ -75,6 +75,14 @@
 - No handling for missing HTML elements
 - No logging/debugging output beyond println!
 - Case files saved to root directory (should use output folder)
+
+### Phase 2 Implementation Notes
+- ✅ Created phone_lookup.rs module with PhoneLookup struct (2025-08-09)
+- ✅ Integrated TruePeopleSearch.com web scraping (2025-08-09)
+- ✅ Added phone_numbers field to Case struct (2025-08-09)
+- ✅ Implemented confidence scoring for phone number matches (2025-08-09)
+- ✅ Added rate limiting with configurable delay (2025-08-09)
+- ✅ Updated CSV export to include phone numbers (2025-08-09)
 
 ## Notes
 - Project uses Selenium WebDriver (requires running instance)

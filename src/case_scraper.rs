@@ -116,6 +116,7 @@ impl SearchBuilder {
                         docket,
                         defendant: String::new(),
                         property_address: String::new(),
+                        phone_numbers: Vec::new(),
                     });
                 }
             }
