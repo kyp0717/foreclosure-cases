@@ -10,7 +10,7 @@ use thirtyfour::prelude::*;
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let caps = DesiredCapabilities::chrome();
     // caps.add_arg("--headless=new")?; // enable in headless mode
-    let port = "45119";
+    let port = "39771";
     let driver_path = format!("http://localhost:{}", port);
 
     let driver = WebDriver::new(driver_path, caps).await?;
