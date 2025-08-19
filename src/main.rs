@@ -1,10 +1,8 @@
 mod case;
 mod case_scraper;
-mod phone_lookup;
 
 use case::save_cases_to_csv;
 use case_scraper::CaseScraper;
-use phone_lookup::PhoneLookup;
 use std::error::Error;
 use thirtyfour::prelude::*;
 
@@ -12,7 +10,7 @@ use thirtyfour::prelude::*;
 async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let caps = DesiredCapabilities::chrome();
     // caps.add_arg("--headless=new")?; // enable in headless mode
-    let port = "46107";
+    let port = "35867";
     let driver_path = format!("http://localhost:{}", port);
 
     let driver = WebDriver::new(driver_path, caps).await?;
