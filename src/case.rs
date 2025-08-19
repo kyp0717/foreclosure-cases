@@ -8,6 +8,7 @@ pub struct Case {
     pub docket: String,
     pub defendant: String,
     pub property_address: String,
+    pub phone_numbers: Vec<String>,
 }
 
 impl Case {
@@ -17,6 +18,7 @@ impl Case {
             docket,
             defendant: String::new(),
             property_address: String::new(),
+            phone_numbers: Vec::new(),
         }
     }
 
@@ -26,6 +28,7 @@ impl Case {
             self.docket.clone(),
             self.defendant.clone(),
             self.property_address.clone(),
+            self.phone_numbers.join("; "),
         ]
     }
 }
@@ -35,7 +38,7 @@ pub fn save_cases_to_csv(cases: &[Case], filename: &str) -> Result<(), Box<dyn E
     let mut wtr = Writer::from_writer(file);
 
     // Write header
-    wtr.write_record(&["Name", "Docket", "Defendant", "Property Address"])?;
+    wtr.write_record(&["Name", "Docket", "Defendant", "Property Address", "Phone Numbers"])?;
 
     // Write case records
     for case in cases {
