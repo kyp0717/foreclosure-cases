@@ -3,7 +3,7 @@ use scraper::{Html, Selector};
 use std::error::Error;
 use thirtyfour::prelude::*;
 
-pub struct Scraper {
+pub struct CaseScraper {
     driver: WebDriver,
 }
 
@@ -12,7 +12,7 @@ pub struct SearchBuilder {
     town: String,
 }
 
-impl Scraper {
+impl CaseScraper {
     pub fn new(driver: WebDriver) -> Self {
         Self { driver }
     }
@@ -116,6 +116,7 @@ impl SearchBuilder {
                         docket,
                         defendant: String::new(),
                         property_address: String::new(),
+                        phone_numbers: Vec::new(),
                     });
                 }
             }

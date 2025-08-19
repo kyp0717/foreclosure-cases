@@ -1,8 +1,6 @@
 target/
 *.html
-*.csv
-*.json
+# *.csv
 *.log
-*.txt
-*.md
-output/
+
+
